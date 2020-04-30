@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 import java.net.http.HttpResponse;
@@ -150,8 +151,17 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
         return run();
     }
 
+    public List<Message> history() {
+        setApiUrlTail("/chat/users/me/messages");
+        setMethod("GET");
+        Response res = run();
+        List<Message> messages = new ArrayList<>();
+        messages.addAll(res.messages);
+        return messages;
+    }
+
     /**
-     * Get chat message history with start date and end date.
+     * Get chat message history with start date and end date. Zoom uses GMT so it only return history according to GMT.
      * @param from String start date with format: yyyy-mm-dd
      * @param to String end date with format: yyyy-mm-dd
      * @return List of Message object
@@ -163,7 +173,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
     }
 
     /**
-     * Get chat message history with start date and end date.
+     * Get chat message history with start date and end date. Zoom uses GMT so it only return history according to GMT.
      * @param dateStart LocalDate start date with format: yyyy-mm-dd
      * @param dateEnd  LocalDate end date with format: yyyy-mm-dd
      * @return List of Message object
@@ -171,16 +181,17 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
     public List<Message> history(LocalDate dateStart, LocalDate dateEnd) {
 
         List<LocalDate> days = new ArrayList<>();
-        while (dateStart.isBefore(dateEnd)) {
+        int gap = Days.daysBetween(dateStart, dateEnd).getDays();
+        for (int i = 0; i <= gap; i++) {
             System.out.println("ZoomChatBuilder : LocalDate : " + dateStart);
-            dateStart = dateStart.plusDays(1);
             days.add(dateStart);
+            dateStart = dateStart.plusDays(1);
         }
         List<Message> messages = new ArrayList<>();
         for (LocalDate day : days) {
             String next_page_token = "";
             do {
-                Response res = this.date(day.toString()).next_page_token(next_page_token).history("me");
+                Response res = this.date(day.toString()).page_size("50").next_page_token(next_page_token).history("me");
                 next_page_token = res.next_page_token;
                 messages.addAll(res.messages);
             } while (!next_page_token.equals(""));
@@ -189,7 +200,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
     }
 
     /**
-     * Get chat message history with start date and end date and constrain.
+     * Get chat message history with start date and end date and constrain. Zoom uses GMT so it only return history according to GMT.
      * @param dateStart String start date with format: yyyy-mm-dd
      * @param dateEnd String end date with format: yyyy-mm-dd
      * @param func constrain lambda function
@@ -258,7 +269,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
         return param("next_page_token", next_page_token);
     }
 
-    public ZoomChatBuilder page_size(int page_size) {
+    public ZoomChatBuilder page_size(String page_size) {
         return param("page_size", page_size);
     }
 
