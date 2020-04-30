@@ -20,7 +20,6 @@ public class bot {
                 .setRateLimitHandler(new RateLimiterSingleton(1))  // Here you could set num of calls per second.
                 .build();
 
-        Response response;
 
 //        // Testing send message by system input
 //        String input;
@@ -33,11 +32,11 @@ public class bot {
 //            // Send Message to specific channel
 //            zoom.chat().toChannelName("test").sendMessage(input);
 //        }
-
-        // Testing send message
-        for (int i = 0; i < 1; i++) {
-            zoom.chat().toChannelName("test").sendMessage("test");
-        }
+//
+//        // Testing send message
+//        for (int i = 0; i < 1; i++) {
+//            zoom.chat().toChannelName("test").sendMessage("test");
+//        }
 
         List<Message> messages;
 
@@ -51,7 +50,7 @@ public class bot {
         System.out.println("OAuthBot : number of messages : " + messages.size());
 
         // Search history in specific days. Zoom uses GMT so it only return history according to GMT.
-        messages = zoom.chat().toChannelName("test").history("2020-4-26", "2020-4-29");
+        messages = zoom.chat().toChannelName("test").history("2020-4-29", "2020-4-29");
 //        for (Message m: messages) {
 //            System.out.println("OAuthBot : " + m.date_time);
 //            System.out.println("OAuthBot : " + m.sender);
@@ -60,7 +59,7 @@ public class bot {
         System.out.println("OAuthBot : number of messages : " + messages.size());
 
         // Search history with constrains. Zoom uses GMT so it only return history according to GMT.
-        messages = zoom.chat().toChannelName("test").searchHistory("2020-4-26", "2020-4-29", x -> x.message.contains("test"));
+        messages = zoom.chat().toChannelName("test").searchHistory("2020-4-26", "2020-4-28", x -> x.message.contains("test"));
 //        for (Message m: messages) {
 //            System.out.println("OAuthBot : " + m.date_time);
 //            System.out.println("OAuthBot : " + m.sender);

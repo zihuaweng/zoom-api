@@ -145,18 +145,28 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
         return run();
     }
 
+    /**
+     * Get chat message history with start date and end date. Zoom uses GMT so it only return history according to GMT.
+     * @param userId User id
+     * @return List of Message object
+     */
     public Response history(String userId) {
         setApiUrlTail("/chat/users/" + userId + "/messages");
         setMethod("GET");
         return run();
     }
 
+    /**
+     * Get chat message history with start date and end date. Zoom uses GMT so it only return history according to GMT.
+     * @return List of Message object
+     */
     public List<Message> history() {
         setApiUrlTail("/chat/users/me/messages");
         setMethod("GET");
         Response res = run();
         List<Message> messages = new ArrayList<>();
         messages.addAll(res.messages);
+        Collections.sort(messages, Comparator.comparing(x -> x.date_time));
         return messages;
     }
 
@@ -196,6 +206,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
                 messages.addAll(res.messages);
             } while (!next_page_token.equals(""));
         }
+        Collections.sort(messages, Comparator.comparing(x -> x.date_time));
         return messages;
     }
 
@@ -209,6 +220,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
     public List<Message> searchHistory(String dateStart, String dateEnd, Predicate<Message> func) {
         List<Message> messages = history(dateStart, dateEnd);
         List<Message> filteredMessages = messages.stream().filter(func).collect(toList());
+        Collections.sort(messages, Comparator.comparing(x -> x.date_time));
         return filteredMessages;
     }
 
