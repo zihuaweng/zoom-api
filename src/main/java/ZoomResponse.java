@@ -50,7 +50,7 @@ class Message {
 
     @Override
     public String toString() {
-        return sender + " : " + message;
+        return "Sender: " + sender + "\nMessage: " + message + "\nTime: " + date_time;
     }
 
     @Override
@@ -75,7 +75,7 @@ class Channel {
 
     @Override
     public String toString() {
-        return jid + " " + name + " " + id + " " + type;
+        return "Channel name: " + name + "\nChannel id: " + id + "\nChannel type: " + type;
     }
     @Override
     public int hashCode() {
@@ -98,7 +98,7 @@ class Member {
 
     @Override
     public String toString() {
-        return id + " " + email;
+        return "Member email: " + email + "\nMember name: " + first_name + " " + last_name;
     }
     @Override
     public int hashCode() {

@@ -32,7 +32,7 @@ public class bot_milestone3 {
 //            if (input.toLowerCase().equals("stop")) {
 //                break;
 //            }
-//            // Send Utils.Message to specific channel
+//            // Send Message to specific channel
 //            zoom.chat().toChannelName("test").sendMessage(input);
 //        }
 
@@ -45,7 +45,7 @@ public class bot_milestone3 {
 
         // Search for default history. Zoom uses GMT so it only return history according to GMT.
         messages = zoom.chat().toChannelName("test").history();
-//        for (Utils.Message m: messages) {
+//        for (Message m: messages) {
 //            System.out.println("OAuthBot : " + m.date_time);
 //            System.out.println("OAuthBot : " + m.sender);
 //            System.out.println("OAuthBot : " + m.message);
@@ -54,7 +54,7 @@ public class bot_milestone3 {
 
         // Search history in specific days. Zoom uses GMT so it only return history according to GMT.
         messages = zoom.chat().toChannelName("test").history("2020-4-27", "2020-4-29");
-//        for (Utils.Message m: messages) {
+//        for (Message m: messages) {
 //            System.out.println("OAuthBot : " + m.date_time);
 //            System.out.println("OAuthBot : " + m.sender);
 //            System.out.println("OAuthBot : " + m.message);
@@ -63,7 +63,7 @@ public class bot_milestone3 {
 
         // Search history with constrains. Zoom uses GMT so it only return history according to GMT.
         messages = zoom.chat().toChannelName("test").searchHistory("2020-4-26", "2020-4-28", x -> x.message.contains("test"));
-//        for (Utils.Message m: messages) {
+//        for (Message m: messages) {
 //            System.out.println("OAuthBot : " + m.date_time);
 //            System.out.println("OAuthBot : " + m.sender);
 //            System.out.println("OAuthBot : " + m.message);

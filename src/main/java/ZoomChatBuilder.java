@@ -153,7 +153,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
     /**
      * Get chat message history with start date and end date. Zoom uses GMT so it only return history according to GMT.
      * @param userId User id
-     * @return List of Utils.Message object
+     * @return List of Message object
      */
     public ZoomResponse history(String userId) {
         setApiUrlTail("/chat/users/" + userId + "/messages");
@@ -163,7 +163,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
 
     /**
      * Get chat message history with start date and end date. Zoom uses GMT so it only return history according to GMT.
-     * @return List of Utils.Message object
+     * @return List of Message object
      */
     public List<Message> history() {
         setApiUrlTail("/chat/users/me/messages");
@@ -179,7 +179,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
      * Get chat message history with start date and end date. Zoom uses GMT so it only return history according to GMT.
      * @param from String start date with format: yyyy-mm-dd
      * @param to String end date with format: yyyy-mm-dd
-     * @return List of Utils.Message object
+     * @return List of Message object
      */
     public List<Message> history(String from, String to) {
         LocalDate dateStart = new LocalDate(from);
@@ -191,7 +191,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
      * Get chat message history with start date and end date. Zoom uses GMT so it only return history according to GMT.
      * @param dateStart LocalDate start date with format: yyyy-mm-dd
      * @param dateEnd  LocalDate end date with format: yyyy-mm-dd
-     * @return List of Utils.Message object
+     * @return List of Message object
      */
     public List<Message> history(LocalDate dateStart, LocalDate dateEnd) {
 
@@ -219,7 +219,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
      * @param dateStart String start date with format: yyyy-mm-dd
      * @param dateEnd String end date with format: yyyy-mm-dd
      * @param func constrain lambda function
-     * @return List of Utils.Message object
+     * @return List of Message object
      */
     public List<Message> searchHistory(String dateStart, String dateEnd, Predicate<Message> func) {
         List<Message> messages = history(dateStart, dateEnd);

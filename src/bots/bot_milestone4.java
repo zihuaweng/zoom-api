@@ -27,7 +27,7 @@ public class bot_milestone4 {
         ZoomEvent newMessageEvent = zoomWebHook.subscribe(Event.NEW_MESSAGE, newMessageChannel, m -> {
             if (m != null || !m.isEmpty()) {
                 System.out.println("***==========get new message!==========***");
-                System.out.println("Utils.Channel name: " + newMessageChannel);
+                System.out.println("Channel name: " + newMessageChannel);
                 m.forEach(System.out::println);
                 System.out.println("***====================================***");
             }
@@ -36,7 +36,7 @@ public class bot_milestone4 {
         ZoomEvent updateMessageEvent = zoomWebHook.subscribe(Event.UPDATE_MESSAGE, newMessageChannel, m -> {
             if (m != null || !m.isEmpty()) {
                 System.out.println("***==========get update message!==========***");
-                System.out.println("Utils.Channel name: " + newMessageChannel);
+                System.out.println("Channel name: " + newMessageChannel);
                 m.forEach(System.out::println);
                 System.out.println("***====================================***");
             }
@@ -46,7 +46,7 @@ public class bot_milestone4 {
         ZoomEvent newMemberEvent = zoomWebHook.subscribe(Event.NEW_MEMBER, newMemberChannel, m -> {
             if (m != null || !m.isEmpty()) {
                 System.out.println("***==========get new members!==========***");
-                System.out.println("Utils.Channel name: " + newMemberChannel);
+                System.out.println("Channel name: " + newMemberChannel);
                 m.forEach(System.out::println);
                 System.out.println("***====================================***");
             }

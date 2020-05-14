@@ -126,12 +126,12 @@ class Server {
         try {
             ServerSocket serverSocket = new ServerSocket(port);
 
-            System.out.println("Local Utils.Server: Waiting for clients to connect...");
+            System.out.println("Local Server: Waiting for clients to connect...");
             while (code == null) {
                 Socket clientSocket = serverSocket.accept();
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 String line;
-                System.out.println("Local Utils.Server: Catch client && reading content...");
+                System.out.println("Local Server: Catch client && reading content...");
                 while ((line = in.readLine()) != null) {
                     if (line.startsWith("GET")) {
                         if (line.split("[= ]").length == 4) {

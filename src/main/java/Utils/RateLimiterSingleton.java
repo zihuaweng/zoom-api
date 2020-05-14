@@ -34,7 +34,7 @@ public class RateLimiterSingleton {
         }
 
         if (calls.size() >= callLimitPerSecond) {
-            System.out.println("Utils.RateLimiterSingleton : Warning : Only accept " + callLimitPerSecond + " requests per second. Request delay.");
+            System.out.println("RateLimiterSingleton : Warning : Only accept " + callLimitPerSecond + " requests per second. Request delay.");
             TimeUnit.MILLISECONDS.sleep(System.currentTimeMillis() - calls.getFirst() + 1000);
             calls.removeFirst();
         }

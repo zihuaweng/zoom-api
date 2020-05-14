@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 /**
  * Actor that receive message from ZoomEventHandler and execute application level process.
- * @param <T> Result objects: Utils.Message, Members...
+ * @param <T> Result objects: Message, Members...
  */
 public class EventHandlerActor<T> implements Runnable{
     enum STATE {

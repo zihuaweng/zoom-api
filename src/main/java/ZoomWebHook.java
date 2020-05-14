@@ -75,7 +75,6 @@ public class ZoomWebHook implements Runnable {
         synchronized (events) {
             zoomEvent.unsubscribe();
             events.remove(zoomEvent);
-            System.out.println(events);
         }
     }
 
