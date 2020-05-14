@@ -1,3 +1,5 @@
+package Utils;
+
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +14,7 @@ public class RateLimiterSingleton {
     }
 
     public RateLimiterSingleton() {
-        this.callLimitPerSecond = 1;
+        this.callLimitPerSecond = 2;
     }
 
     public static RateLimiterSingleton getInstance() {
@@ -32,7 +34,7 @@ public class RateLimiterSingleton {
         }
 
         if (calls.size() >= callLimitPerSecond) {
-            System.out.println("RateLimiterSingleton : Warning : Only accept " + callLimitPerSecond + " requests per second. Request delay.");
+            System.out.println("Utils.RateLimiterSingleton : Warning : Only accept " + callLimitPerSecond + " requests per second. Request delay.");
             TimeUnit.MILLISECONDS.sleep(System.currentTimeMillis() - calls.getFirst() + 1000);
             calls.removeFirst();
         }

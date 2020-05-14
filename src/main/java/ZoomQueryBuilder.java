@@ -35,7 +35,6 @@ public abstract class ZoomQueryBuilder extends ZoomRequest implements Cloneable 
      * @return HttpResponse<String> result
      */
     public HttpResponse<String> run(String method, String endpoint, int timeout, String[] header) {
-        System.out.println("ZoomQueryBuilder : " + requestData);
         HttpResponse<String> response;
         switch (method) {
             case "GET":

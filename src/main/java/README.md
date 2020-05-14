@@ -18,8 +18,8 @@ timeout = 15
 ngrok http 4000
 ```
 - Run code using Intellij
-    - Run src/bots/bot.java (If you fail to build the project, please check your java compiler version, it should be at least 11.)
+    - Run src/bots/bot_milestone3.java (If you fail to build the project, please check your java compiler version, it should be at least 11.)
     - The application will open your default browser and redirect to the sign in page of Zoom. Remember to click sign in and authorize the application.
     
 - Rate Limit
-    - Zoom Api allows 10 calls per second. The number in this application is 1 (which is controlled in RateLimiterSingleton class, line 20 in bot.java, setRateLimitHandler(new RateLimiterSingleton(1))). If users try more than 1 request in second, it will show warning and delay request.
+    - Zoom Api allows 10 calls per second. The number in this application is 1 (which is controlled in Utils.RateLimiterSingleton class, line 20 in bot_milestone3.java, setRateLimitHandler(new Utils.RateLimiterSingleton(1))). If users try more than 1 request in second, it will show warning and delay request.

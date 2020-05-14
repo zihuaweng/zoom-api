@@ -50,86 +50,91 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
      * Execute http request.
      * @return Response
      */
-    public Response run() {
+    public ZoomResponse run() {
         HttpResponse<String> httpRes = run(method, apiUrlTail, timeout, header);
-        System.out.println("ZoomChatBuilder : " + method + "   " + apiUrlTail);
-        System.out.println("ZoomChatBuilder : " + httpRes.statusCode());
-        Response res = new Gson().fromJson(httpRes.body(), Response.class);
+        System.out.println("ZoomChatBuilder : " + method + "   " + apiUrlTail + " statusCode " + httpRes.statusCode());
+        ZoomResponse res = new Gson().fromJson(httpRes.body(), ZoomResponse.class);
         return res;
     }
 
     // chat channels
-    public Response listChannels() {
+    public List<Channel> listChannels() {
         setApiUrlTail("/chat/users/me/channels");
         setMethod("GET");
-        return run();
+        ZoomResponse res = run();
+        List<Channel> channels = new ArrayList<>();
+        channels.addAll(res.channels);
+        return channels;
     }
 
-    public Response createChannel() {
+    public ZoomResponse createChannel() {
         setApiUrlTail("/chat/users/me/channels");
         setMethod("POST");
         return run();
     }
 
-    public Response getChannelById(String channelId) {
+    public ZoomResponse getChannelById(String channelId) {
         setApiUrlTail("/chat/channels/" + channelId);
         setMethod("POST");
         return run();
     }
 
-    public Response getChannelByName(String channelName) {
+    public ZoomResponse getChannelByName(String channelName) {
         return getChannelById(getChannelId(channelName));
     }
 
-    public Response updateChannelById(String channelId) {
+    public ZoomResponse updateChannelById(String channelId) {
         setApiUrlTail("/chat/channels/" + channelId);
         setMethod("PATCH");
         return run();
     }
 
-    public Response updateChannelByName(String channelName) {
+    public ZoomResponse updateChannelByName(String channelName) {
         return updateChannelById(getChannelId(channelName));
     }
 
-    public Response deleteChannelById(String channelId) {
+    public ZoomResponse deleteChannelById(String channelId) {
         setApiUrlTail("/chat/channels/" + channelId);
         setMethod("DELETE");
         return run();
     }
 
-    public Response deleteChannelByName(String channelName) {
+    public ZoomResponse deleteChannelByName(String channelName) {
         return deleteChannelById(getChannelId(channelName));
     }
 
-    public Response listMembersById(String channelId) {
+    public List<Member> listMembersById(String channelId) {
         setApiUrlTail("/chat/channels/" + channelId + "/members");
         setMethod("GET");
-        return run();
+        ZoomResponse res = run();
+        List<Member> members = new ArrayList<>();
+        members.addAll(res.members);
+        return members;
     }
 
-    public Response listMembersByName(String channelName) {
+    public List<Member> listMembersByName(String channelName) {
         return listMembersById(getChannelId(channelName));
     }
 
-    public Response inviteMembers(String channelId) {
+    public ZoomResponse inviteMembers(String channelId) {
         setApiUrlTail("/chat/channels/" + channelId + "/members");
         setMethod("POST");
         return run();
     }
 
-    public Response joinMembers(String channelId) {
+    public ZoomResponse joinMembers(String channelId) {
         setApiUrlTail("/chat/channels/" + channelId + "/members/me");
         setMethod("POST");
         return run();
     }
 
-    public Response leaveMembers(String channelId) {
+    public ZoomResponse leaveMembers(String channelId) {
         setApiUrlTail("/chat/channels/" + channelId + "/members/me");
         setMethod("DELETE");
         return run();
     }
 
-    public Response removeMembers(String channelId, String memberId) {
+    public ZoomResponse removeMembers(String channelId, String memberId) {
         setApiUrlTail("/chat/channels/" + channelId + "/members/" + memberId);
         setMethod("DELETE");
         return run();
@@ -138,7 +143,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
     /**
      * Send message to a channel
      */
-    public Response sendMessage(String message) {
+    public ZoomResponse sendMessage(String message) {
         setApiUrlTail("/chat/users/me/messages");
         setMethod("POST");
         message(message);
@@ -148,9 +153,9 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
     /**
      * Get chat message history with start date and end date. Zoom uses GMT so it only return history according to GMT.
      * @param userId User id
-     * @return List of Message object
+     * @return List of Utils.Message object
      */
-    public Response history(String userId) {
+    public ZoomResponse history(String userId) {
         setApiUrlTail("/chat/users/" + userId + "/messages");
         setMethod("GET");
         return run();
@@ -158,12 +163,12 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
 
     /**
      * Get chat message history with start date and end date. Zoom uses GMT so it only return history according to GMT.
-     * @return List of Message object
+     * @return List of Utils.Message object
      */
     public List<Message> history() {
         setApiUrlTail("/chat/users/me/messages");
         setMethod("GET");
-        Response res = run();
+        ZoomResponse res = run();
         List<Message> messages = new ArrayList<>();
         messages.addAll(res.messages);
         Collections.sort(messages, Comparator.comparing(x -> x.date_time));
@@ -174,7 +179,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
      * Get chat message history with start date and end date. Zoom uses GMT so it only return history according to GMT.
      * @param from String start date with format: yyyy-mm-dd
      * @param to String end date with format: yyyy-mm-dd
-     * @return List of Message object
+     * @return List of Utils.Message object
      */
     public List<Message> history(String from, String to) {
         LocalDate dateStart = new LocalDate(from);
@@ -186,14 +191,13 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
      * Get chat message history with start date and end date. Zoom uses GMT so it only return history according to GMT.
      * @param dateStart LocalDate start date with format: yyyy-mm-dd
      * @param dateEnd  LocalDate end date with format: yyyy-mm-dd
-     * @return List of Message object
+     * @return List of Utils.Message object
      */
     public List<Message> history(LocalDate dateStart, LocalDate dateEnd) {
 
         List<LocalDate> days = new ArrayList<>();
         int gap = Days.daysBetween(dateStart, dateEnd).getDays();
         for (int i = 0; i <= gap; i++) {
-            System.out.println("ZoomChatBuilder : LocalDate : " + dateStart);
             days.add(dateStart);
             dateStart = dateStart.plusDays(1);
         }
@@ -201,7 +205,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
         for (LocalDate day : days) {
             String next_page_token = "";
             do {
-                Response res = this.date(day.toString()).page_size("50").next_page_token(next_page_token).history("me");
+                ZoomResponse res = this.date(day.toString()).page_size("50").next_page_token(next_page_token).history("me");
                 next_page_token = res.next_page_token;
                 messages.addAll(res.messages);
             } while (!next_page_token.equals(""));
@@ -215,7 +219,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
      * @param dateStart String start date with format: yyyy-mm-dd
      * @param dateEnd String end date with format: yyyy-mm-dd
      * @param func constrain lambda function
-     * @return List of Message object
+     * @return List of Utils.Message object
      */
     public List<Message> searchHistory(String dateStart, String dateEnd, Predicate<Message> func) {
         List<Message> messages = history(dateStart, dateEnd);
@@ -237,8 +241,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
      * @return channel id
      */
     public String getChannelId(String channelName) {
-        Response response = root.chat().listChannels();
-        List<Channel> channels = response.channels;
+        List<Channel> channels = root.chat().listChannels();
         String channelId = null;
         for (Channel c : channels) {
             if (c.name.equals(channelName)) {

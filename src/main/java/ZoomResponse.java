@@ -4,7 +4,7 @@ import java.util.List;
 /**
  *  Return object for all response
  */
-public class Response {
+public class ZoomResponse {
     int total_records;
     int page_size;
     String id;
@@ -39,6 +39,32 @@ class Message {
     String sender;
     Date date_time;
     long timestamp;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return sender + " : " + message;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Message)
+            return id.equals(((Message) obj).id);
+        return false;
+    }
+
 }
 
 class Channel {
@@ -46,6 +72,21 @@ class Channel {
     String name;
     String id;
     int type;
+
+    @Override
+    public String toString() {
+        return jid + " " + name + " " + id + " " + type;
+    }
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof Channel)
+            return id.equals(((Channel) obj).id);
+        return false;
+    }
 }
 
 class Member {
@@ -54,6 +95,21 @@ class Member {
     String first_name;
     String last_name;
     String role;
+
+    @Override
+    public String toString() {
+        return id + " " + email;
+    }
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof Member)
+            return id.equals(((Member) obj).id);
+        return false;
+    }
 }
 
 class Meeting {

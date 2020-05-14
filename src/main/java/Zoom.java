@@ -1,3 +1,5 @@
+import Utils.RateLimiterSingleton;
+
 public class Zoom {
 
     static final String ZOOM_URL = "https://api.zoom.us/v2";
@@ -55,5 +57,29 @@ public class Zoom {
 
     public ZoomChatBuilder chat() {
         return new ZoomChatBuilder(this);
+    }
+
+    public ZoomMeetingBuilder meeting() {
+        return new ZoomMeetingBuilder(this);
+    }
+
+    public ZoomRecordingBuilder recording() {
+        return new ZoomRecordingBuilder(this);
+    }
+
+    public ZoomReportBuilder report() {
+        return new ZoomReportBuilder(this);
+    }
+
+    public ZoomUsersBuilder users() {
+        return new ZoomUsersBuilder(this);
+    }
+
+    public ZoomWebinarsBuilder webinars() {
+        return new ZoomWebinarsBuilder(this);
+    }
+
+    public ZoomWebHook webHook() {
+        return new ZoomWebHook(this);
     }
 }

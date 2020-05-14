@@ -28,8 +28,8 @@ public class ZoomRecordingBuilder extends ZoomQueryBuilder {
         this.method = method;
     }
 
-    public Response run() {
-        Response res = new Gson().fromJson(run(method, apiUrlTail, timeout, header).body(), Response.class);
+    public ZoomResponse run() {
+        ZoomResponse res = new Gson().fromJson(run(method, apiUrlTail, timeout, header).body(), ZoomResponse.class);
         return res;
     }
 
