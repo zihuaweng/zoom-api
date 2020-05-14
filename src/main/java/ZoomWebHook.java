@@ -69,11 +69,11 @@ public class ZoomWebHook implements Runnable {
     }
 
     /**
-     * Unsubscribe an event from webhook.
+     * Unsubscribe an event from webhook and kill handler thread.
      */
     public void unsubscribe(ZoomEvent zoomEvent) {
         synchronized (events) {
-            zoomEvent.unsubscribe();
+            zoomEvent.stopHandler();
             events.remove(zoomEvent);
         }
     }

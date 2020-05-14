@@ -25,7 +25,10 @@ public class ZoomEvent {
         return operator;
     }
 
-    public void unsubscribe() {
+    /**
+     * Unsubscribe current event from webhook.
+     */
+    public void stopHandler() {
         operator.receive();
     }
 }
