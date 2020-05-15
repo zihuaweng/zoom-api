@@ -15,10 +15,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class OAuthTokenHandler {
 
     private static final String TOKEN_ENDPOINT_URL = "https://zoom.us/oauth/token";
     private static final String AUTHORIZATION_URL = "https://zoom.us/oauth/authorize";
+    private static final Logger LOGGER = LoggerFactory.getLogger(OAuthTokenHandler.class.getName());
 
     /**
      * Request authorization code from resource server.
@@ -30,7 +34,7 @@ public class OAuthTokenHandler {
      */
     private static String authorizeCode(String clientId, String redirectUri, int port) {
         try {
-            System.out.println("OAuth : Requesting authorize code...");
+            LOGGER.debug("Requesting authorize code...");
             OAuthClientRequest request = OAuthClientRequest
                     .authorizationLocation(AUTHORIZATION_URL)
                     .setClientId(clientId)
@@ -39,7 +43,7 @@ public class OAuthTokenHandler {
                     .buildQueryMessage();
 
             String authorizationUrl = request.getLocationUri();
-            System.out.println("OAuth : Open authorization url : " + authorizationUrl);
+            LOGGER.debug("Open authorization url : {}", authorizationUrl);
 
             openBrowser(authorizationUrl);
             Server server = new Server(port);
@@ -64,8 +68,8 @@ public class OAuthTokenHandler {
     public static String accessToken(String clientId, String clientSecret, String redirectUri, int port) {
         try {
             String authorizeCode = authorizeCode(clientId, redirectUri, port);
-            System.out.println("OAuth : authorizeCode = ***" + authorizeCode + "***");
-            System.out.println("OAuth : Requesting access token...");
+            LOGGER.debug("AuthorizeCode = ***{}***", authorizeCode);
+            LOGGER.debug("Requesting access token...");
             OAuthClientRequest request = OAuthClientRequest
                     .tokenLocation(TOKEN_ENDPOINT_URL)
                     .setGrantType(GrantType.AUTHORIZATION_CODE)
@@ -79,15 +83,15 @@ public class OAuthTokenHandler {
             OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
             String accessToken = oAuthResponse.getAccessToken();
             long expiresIn = oAuthResponse.getExpiresIn();
-            System.out.println("OAuth : AccessToken " + accessToken);
-            System.out.println("OAuth : Expires In " + expiresIn);
-            System.out.println("OAuth : =============================================");
+            LOGGER.debug("AccessToken {}", accessToken);
+            LOGGER.debug("Expires In {}", expiresIn);
+            LOGGER.info("Receive OAuth accessToken");
             return accessToken;
         } catch (Exception e) {
+            LOGGER.error("Request access token failed!", e);
             e.printStackTrace();
-            throw new RuntimeException("OAuth : Request access token failed!");
+            return null;
         }
-
     }
 
     /**
@@ -110,6 +114,7 @@ public class OAuthTokenHandler {
  * Local ServerSocket for receiving authorization code from resource server.
  */
 class Server {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OAuthTokenHandler.class.getName());
 
     private final int port;
     private String code = null;
@@ -126,12 +131,12 @@ class Server {
         try {
             ServerSocket serverSocket = new ServerSocket(port);
 
-            System.out.println("Local Server: Waiting for clients to connect...");
+            LOGGER.debug("Waiting for clients to connect...");
             while (code == null) {
                 Socket clientSocket = serverSocket.accept();
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 String line;
-                System.out.println("Local Server: Catch client && reading content...");
+                LOGGER.debug("Catch client && reading content...");
                 while ((line = in.readLine()) != null) {
                     if (line.startsWith("GET")) {
                         if (line.split("[= ]").length == 4) {
@@ -143,7 +148,7 @@ class Server {
             }
             serverSocket.close();
         } catch (IOException e) {
-            System.err.println("Unable to process zoomapi.client request");
+            LOGGER.error("Unable to process zoomapi.client request", e);
             e.printStackTrace();
         }
 

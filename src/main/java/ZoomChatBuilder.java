@@ -1,6 +1,8 @@
 import com.google.gson.Gson;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.http.HttpResponse;
 import java.util.*;
@@ -15,6 +17,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
     private String apiUrlTail;
     private final String[] header;
     private int timeout;
+    private final Logger LOGGER = LoggerFactory.getLogger(ZoomChatBuilder.class.getName());
 
     /**
      * Create a chat related builder
@@ -52,7 +55,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
      */
     public ZoomResponse run() {
         HttpResponse<String> httpRes = run(method, apiUrlTail, timeout, header);
-        System.out.println("ZoomChatBuilder : " + method + "   " + apiUrlTail + " statusCode " + httpRes.statusCode());
+        LOGGER.debug("method: {} apiUrlTail: {}, statusCode: {}", method, apiUrlTail, httpRes.statusCode());
         ZoomResponse res = new Gson().fromJson(httpRes.body(), ZoomResponse.class);
         return res;
     }

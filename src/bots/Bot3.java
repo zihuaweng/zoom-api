@@ -1,12 +1,15 @@
 import Utils.OAuthTokenHandler;
 import Utils.RateLimiterSingleton;
 import Utils.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class bot_milestone3 {
+public class Bot3 {
 
     public static void main(String[] args) {
+        Logger logger = LoggerFactory.getLogger(Bot3.class.getName());
 
         // Retrieve access token
         Config config = new Config("OAuthConfig.properties");
@@ -46,29 +49,29 @@ public class bot_milestone3 {
         // Search for default history. Zoom uses GMT so it only return history according to GMT.
         messages = zoom.chat().toChannelName("test").history();
 //        for (Message m: messages) {
-//            System.out.println("OAuthBot : " + m.date_time);
-//            System.out.println("OAuthBot : " + m.sender);
-//            System.out.println("OAuthBot : " + m.message);
+//            logger.info("OAuthBot : {}", m.date_time);
+//            logger.info("OAuthBot : {}", m.sender);
+//            logger.info("OAuthBot : {}", m.message);
 //        }
-        System.out.println("OAuthBot : number of messages : " + messages.size());
+        logger.info("OAuthBot : number of messages : {}", messages.size());
 
         // Search history in specific days. Zoom uses GMT so it only return history according to GMT.
         messages = zoom.chat().toChannelName("test").history("2020-4-27", "2020-4-29");
 //        for (Message m: messages) {
-//            System.out.println("OAuthBot : " + m.date_time);
-//            System.out.println("OAuthBot : " + m.sender);
-//            System.out.println("OAuthBot : " + m.message);
+//            logger.info("OAuthBot : {}", m.date_time);
+//            logger.info("OAuthBot : {}", m.sender);
+//            logger.info("OAuthBot : {}", m.message);
 //        }
-        System.out.println("OAuthBot : number of messages : " + messages.size());
+        logger.info("OAuthBot : number of messages : {}", messages.size());
 
         // Search history with constrains. Zoom uses GMT so it only return history according to GMT.
         messages = zoom.chat().toChannelName("test").searchHistory("2020-4-26", "2020-4-28", x -> x.message.contains("test"));
 //        for (Message m: messages) {
-//            System.out.println("OAuthBot : " + m.date_time);
-//            System.out.println("OAuthBot : " + m.sender);
-//            System.out.println("OAuthBot : " + m.message);
+//            logger.info("OAuthBot : {}", m.date_time);
+//            logger.info("OAuthBot : {}", m.sender);
+//            logger.info("OAuthBot : {}", m.message);
 //        }
-        System.out.println("OAuthBot : number of messages : " + messages.size());
+        logger.info("OAuthBot : number of messages : {}", messages.size());
 
 
     }

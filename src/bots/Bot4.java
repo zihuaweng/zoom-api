@@ -1,11 +1,13 @@
 import Utils.OAuthTokenHandler;
 import Utils.RateLimiterSingleton;
 import Utils.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class bot_milestone4 {
+public class Bot4 {
 
     public static void main(String[] args) throws InterruptedException {
-
+        Logger logger = LoggerFactory.getLogger(Bot4.class.getName());
         // Retrieve access token
         Config config = new Config("OAuthConfig.properties");
         String clientId = config.getProperty("clientId");
@@ -26,37 +28,34 @@ public class bot_milestone4 {
         String newMessageChannel = "own";
         ZoomEvent newMessageEvent = zoomWebHook.subscribe(Event.NEW_MESSAGE, newMessageChannel, m -> {
             if (m != null || !m.isEmpty()) {
-                System.out.println("***==========get new message!==========***");
-                System.out.println("Channel name: " + newMessageChannel);
-                m.forEach(System.out::println);
-                System.out.println("***====================================***");
+                logger.info("Channel {} gets new message!", newMessageChannel);
+                m.forEach(x -> logger.info(x.toString()));
             }
         });
+        logger.info("Subscribe NEW_MESSAGE event");
 
         ZoomEvent updateMessageEvent = zoomWebHook.subscribe(Event.UPDATE_MESSAGE, newMessageChannel, m -> {
             if (m != null || !m.isEmpty()) {
-                System.out.println("***==========get update message!==========***");
-                System.out.println("Channel name: " + newMessageChannel);
-                m.forEach(System.out::println);
-                System.out.println("***====================================***");
+                logger.info("Channel {} gets update message!", newMessageChannel);
+                m.forEach(x -> logger.info(x.toString()));
             }
         });
+        logger.info("Subscribe UPDATE_MESSAGE event");
 
         String newMemberChannel = "mine";
         ZoomEvent newMemberEvent = zoomWebHook.subscribe(Event.NEW_MEMBER, newMemberChannel, m -> {
             if (m != null || !m.isEmpty()) {
-                System.out.println("***==========get new members!==========***");
-                System.out.println("Channel name: " + newMemberChannel);
-                m.forEach(System.out::println);
-                System.out.println("***====================================***");
+                logger.info("Channel {} get new members!", newMemberChannel);
+                m.forEach(x -> logger.info(x.toString()));
             }
         });
+        logger.info("Subscribe NEW_MEMBER event");
 
         Thread.sleep(60*1000);
         zoomWebHook.unsubscribe(newMessageEvent);
         zoomWebHook.unsubscribe(updateMessageEvent);
         zoomWebHook.unsubscribe(newMemberEvent);
-        System.out.println("***==========unsubscribe all events!==========***");
+        logger.info("Unsubscribe all events!");
         zoomWebHook.stop();
     }
 }

@@ -1,5 +1,8 @@
 package Utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
@@ -8,6 +11,7 @@ public class RateLimiterSingleton {
     private LinkedList<Long> calls = new LinkedList<>();
     private static RateLimiterSingleton rateLimiter = null;
     private final int callLimitPerSecond;
+    private final Logger LOGGER = LoggerFactory.getLogger(RateLimiterSingleton.class.getName());
 
     public RateLimiterSingleton(int callLimitPerSecond) {
         this.callLimitPerSecond = callLimitPerSecond;
@@ -34,7 +38,7 @@ public class RateLimiterSingleton {
         }
 
         if (calls.size() >= callLimitPerSecond) {
-            System.out.println("RateLimiterSingleton : Warning : Only accept " + callLimitPerSecond + " requests per second. Request delay.");
+            LOGGER.warn("RateLimiterSingleton : Warning : Only accept {} requests per second. Request delay.", callLimitPerSecond);
             TimeUnit.MILLISECONDS.sleep(System.currentTimeMillis() - calls.getFirst() + 1000);
             calls.removeFirst();
         }

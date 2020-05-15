@@ -1,3 +1,6 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -5,6 +8,7 @@ import java.util.Properties;
 public class Config {
 
     private Properties config;
+    private final Logger LOGGER = LoggerFactory.getLogger(Config.class.getName());
 
     /**
      * Read config file and create Object to retrieve data.
@@ -16,7 +20,7 @@ public class Config {
             if (inputStream != null) {
                 config.load(inputStream);
             } else {
-                throw new FileNotFoundException("property file '" + configFilePath + "' not found.");
+                LOGGER.error("Read config file failed.", new FileNotFoundException("property file '" + configFilePath + "' not found."));
             }
         } catch (Exception e) {
             e.printStackTrace();
