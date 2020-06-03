@@ -1,5 +1,7 @@
 package Utils;
 
+import database.SQLDatabase;
+import database.entity.Credential;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
@@ -65,7 +67,7 @@ public class OAuthTokenHandler {
      * @param port         Local server port
      * @return access token
      */
-    public static String accessToken(String clientId, String clientSecret, String redirectUri, int port) {
+    public static Credential accessToken(String clientId, String clientSecret, String redirectUri, int port) {
         try {
             String authorizeCode = authorizeCode(clientId, redirectUri, port);
             LOGGER.debug("AuthorizeCode = ***{}***", authorizeCode);
@@ -83,10 +85,7 @@ public class OAuthTokenHandler {
             OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
             String accessToken = oAuthResponse.getAccessToken();
             long expiresIn = oAuthResponse.getExpiresIn();
-            LOGGER.debug("AccessToken {}", accessToken);
-            LOGGER.debug("Expires In {}", expiresIn);
-            LOGGER.info("Receive OAuth accessToken");
-            return accessToken;
+            return new Credential(clientId, accessToken, expiresIn);
         } catch (Exception e) {
             LOGGER.error("Request access token failed!", e);
             e.printStackTrace();
@@ -106,6 +105,22 @@ public class OAuthTokenHandler {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+
+    public static Credential accessToken(String clientId, String clientSecret, String redirectUri, int port, SQLDatabase sqlDatabase) {
+        Credential cFromSQL = sqlDatabase.getData(Credential.class, clientId);
+        if (cFromSQL == null) {
+            Credential newCredential = accessToken(clientId, clientSecret, redirectUri, port);
+            sqlDatabase.insert(newCredential);
+            return newCredential;
+        } else if (cFromSQL.getTimestamp() + cFromSQL.getExpiresIn() < System.currentTimeMillis() / 1000) {
+            Credential newCredential = accessToken(clientId, clientSecret, redirectUri, port);
+            sqlDatabase.update(newCredential);
+            return newCredential;
+        } else {
+            return cFromSQL;
         }
     }
 }

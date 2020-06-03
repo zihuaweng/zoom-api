@@ -1,4 +1,8 @@
 import com.google.gson.Gson;
+import database.SQLDatabase;
+import database.entity.Channels;
+import database.entity.ChannelsMembership;
+import database.entity.Messages;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -12,12 +16,14 @@ import static java.util.stream.Collectors.toList;
 
 public class ZoomChatBuilder extends ZoomQueryBuilder {
 
+    private long VALID_TIME = 600;
+
     private final Zoom root;
     private String method;
     private String apiUrlTail;
     private final String[] header;
     private int timeout;
-    private final Logger LOGGER = LoggerFactory.getLogger(ZoomChatBuilder.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(ZoomChatBuilder.class.getName());
 
     /**
      * Create a chat related builder
@@ -55,7 +61,7 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
      */
     public ZoomResponse run() {
         HttpResponse<String> httpRes = run(method, apiUrlTail, timeout, header);
-        LOGGER.debug("method: {} apiUrlTail: {}, statusCode: {}", method, apiUrlTail, httpRes.statusCode());
+        logger.debug("method: {} apiUrlTail: {}, statusCode: {}", method, apiUrlTail, httpRes.statusCode());
         ZoomResponse res = new Gson().fromJson(httpRes.body(), ZoomResponse.class);
         return res;
     }
@@ -70,9 +76,30 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
         return channels;
     }
 
+    public List<Channel> listChannels(String clientId, SQLDatabase sqlDatabase) {
+        List<Channel> channels = listChannels();
+        for (Channel channel: channels) {
+            Channels c = new Channels(clientId, channel.id, channel.name);
+            Channels cFromSQL = sqlDatabase.getData(Channels.class, Arrays.asList("clientId", "channelId"), Arrays.asList(clientId, channel.id));
+            if (cFromSQL == null) {
+                sqlDatabase.insert(c);
+            } else if (!cFromSQL.equals(c) || System.currentTimeMillis() / 1000 - cFromSQL.getTimestamp() > VALID_TIME) {
+                sqlDatabase.update(c);
+            }
+        }
+        return channels;
+    }
+
     public ZoomResponse createChannel() {
         setApiUrlTail("/chat/users/me/channels");
         setMethod("POST");
+        return run();
+    }
+
+    public ZoomResponse createChannel(String channelName) {
+        setApiUrlTail("/chat/users/me/channels");
+        setMethod("POST");
+        param("name", channelName);
         return run();
     }
 
@@ -117,6 +144,21 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
 
     public List<Member> listMembersByName(String channelName) {
         return listMembersById(getChannelId(channelName));
+    }
+
+    public List<Member> listMembersByName(String channelName, SQLDatabase sqlDatabase) {
+        String channelId = getChannelId(channelName);
+        List<Member> members = listMembersByName(channelName);
+        for (Member member: members) {
+            ChannelsMembership m = new ChannelsMembership(channelId, channelName, member.first_name + " " + member.last_name, member.email);
+            ChannelsMembership mFromSQL = sqlDatabase.getData(ChannelsMembership.class, Arrays.asList("channelId", "email"), Arrays.asList(channelId, member.email));
+            if (mFromSQL == null) {
+                sqlDatabase.insert(m);
+            } else if (!mFromSQL.equals(m) || System.currentTimeMillis() / 1000 - mFromSQL.getTimestamp() > VALID_TIME){
+                sqlDatabase.update(m);
+            }
+        }
+        return members;
     }
 
     public ZoomResponse inviteMembers(String channelId) {
@@ -175,6 +217,20 @@ public class ZoomChatBuilder extends ZoomQueryBuilder {
         List<Message> messages = new ArrayList<>();
         messages.addAll(res.messages);
         Collections.sort(messages, Comparator.comparing(x -> x.date_time));
+        return messages;
+    }
+
+    public List<Message> history(String channelId, SQLDatabase sqlDatabase) {
+        List<Message> messages = history();
+        for (Message message: messages) {
+            Messages m = new Messages(channelId, message.id, message.sender, message.message, message.date_time);
+            Messages mFromSQL = sqlDatabase.getData(Messages.class, message.id);
+            if (mFromSQL == null) {
+                sqlDatabase.insert(m);
+            } else if (!mFromSQL.equals(m) || System.currentTimeMillis() / 1000 - mFromSQL.getTimestamp() > VALID_TIME) {
+                sqlDatabase.update(m);
+            }
+        }
         return messages;
     }
 

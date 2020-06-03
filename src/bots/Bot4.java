@@ -1,6 +1,7 @@
 import Utils.OAuthTokenHandler;
 import Utils.RateLimiterSingleton;
 import Utils.Util;
+import database.entity.Credential;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,10 +17,10 @@ public class Bot4 {
         int port = Integer.parseInt(config.getProperty("port"));
         String redirectUri = Util.getRedirectUrl(ngrokServerUrl);
 
-        String accessToken = OAuthTokenHandler.accessToken(clientId, clientSecret, redirectUri, port);
+        Credential credential = OAuthTokenHandler.accessToken(clientId, clientSecret, redirectUri, port);
 
         Zoom zoom = new ZoomBuilder()
-                .setOAuthAccessToken(accessToken)
+                .setOAuthAccessToken(credential.getOAuthToken())
                 .setRateLimitHandler(new RateLimiterSingleton(1))  // Here you could set num of calls per second.
                 .build();
 
