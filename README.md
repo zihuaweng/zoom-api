@@ -1,4 +1,5 @@
 # ZoomApi
+This is a java wrapper around Zoom APIs. Only tested on iOS system locally.
 
 ## Set Up Locally
 - java 11 or above
