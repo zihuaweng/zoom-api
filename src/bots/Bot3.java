@@ -73,7 +73,5 @@ public class Bot3 {
 //            logger.info("OAuthBot : {}", m.message);
 //        }
         logger.info("OAuthBot : number of messages : {}", messages.size());
-
-
     }
 }
