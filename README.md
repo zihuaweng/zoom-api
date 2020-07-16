@@ -1,6 +1,13 @@
 # ZoomApi
 This is a Java wrapper for essential Zoom APIs, providing an easy way to integrate Zoom with other applications.
 
+## Features
+- Fully Builder design pattern
+- OAuth 2.0 authentication
+- customized rate limit
+- Webhook
+- Caching data
+
 ## Set Up Locally
 - java 11 or above
 - Import zoomapi source code as Maven project. 
@@ -60,7 +67,7 @@ messages = zoom.chat().toChannelName("test").history("2020-4-27", "2020-4-29");
 messages = zoom.chat().toChannelName("test").searchHistory("2020-4-26", "2020-4-28", x -> x.message.contains("test"));
 ```
 
-- WebHook
+- Webhook
 ```java
 ZoomWebHook zoomWebHook = zoom.webHook();
 
@@ -116,5 +123,5 @@ List<Message> messages = zoom.chat().toChannelName("mine").history("mine", sqlDa
 List<Member> members = zoom.chat().listMembersByName("mine", sqlDatabase);
 ```
 
-- Rate Limit
+- Rate limit
     - Zoom Api allows 10 calls per second. The number in this application is 1 (new RateLimiterSingleton(1)). If users try more than 1 request in second, it will show warning and delay request.
