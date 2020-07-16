@@ -1,5 +1,5 @@
 # ZoomApi
-This is a java wrapper around Zoom APIs. Only tested on iOS system locally.
+This is a Java wrapper for essential Zoom APIs, providing an easy way to integrate Zoom with other applications.
 
 ## Set Up Locally
 - java 11 or above
